@@ -44,7 +44,7 @@ def sql_injection_scan(urlToBeChecked):
     forms = get_forms(urlToBeChecked)
     print(f"[+] Detected {len(forms)} forms on {urlToBeChecked}.")
     
-    score = 12  # 初始化分数
+    score = 12  # set score=0
     
     for form in forms:
         details = form_details(form)
@@ -63,12 +63,11 @@ def sql_injection_scan(urlToBeChecked):
                 res = s.get(urlToBeChecked, params=data)
             if vulnerable(res):
                 print("SQL injection attack vulnerability in link: ", urlToBeChecked)
-                score -= 2  # 每次检测到 SQL 注入漏洞，分数加 2
+                score -= 2 
             else:
                 print("No SQL injection attack vulnerability detected")
                 break
     
-    # 输出分数
     print("Score:", score)
 
 if __name__ == "__main__":
