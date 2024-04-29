@@ -1,5 +1,17 @@
 import socket
+from urllib.parse import urlparse
 
+# Prompt the user to enter the URL
+url = input("Enter the URL: ")
+
+# Parse the URL to extract the scheme and hostname
+parsed_url = urlparse(url)
+scheme = parsed_url.scheme
+hostname = parsed_url.hostname
+
+# Display the extracted scheme and hostname
+print("Scheme extracted from the URL:", scheme)
+print("Hostname extracted from the URL:", hostname)
 
 def valid_hostname(hostname: str):
     """
@@ -41,3 +53,22 @@ def valid_hostname(hostname: str):
     return hostname
 
 #scheme
+print(valid_hostname(hostname))
+
+if scheme == '':
+    if url.netloc == '':
+        # Relative URL (src="/path")
+        relativeorigin = True
+    else:
+        # Relative protocol (src="//host/path")
+        relativeorigin = False
+else:
+    relativeorigin = False
+
+# See if it's a secure scheme
+if scheme == 'https' or (relativeorigin and urlparse(url).scheme == 'https'):
+    securescheme = True
+else:
+    securescheme = False
+
+print(securescheme)
