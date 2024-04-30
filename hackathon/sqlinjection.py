@@ -4,7 +4,7 @@ import sys
 from urllib.parse import urljoin
 
 s = requests.Session()
-s.headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+s.headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 
 #  Function to get all forms 
 def get_forms(url):
@@ -34,7 +34,7 @@ def form_details(form):
 
 def vulnerable(response):
     errors = {"quoted string not properly terminated", 
-              "unclosed quotation mark after the charachter string",
+              "unclosed quotation mark after charachter string",
               "you have an error in you SQL syntax" 
              }
     for error in errors:
@@ -44,7 +44,7 @@ def vulnerable(response):
 
 def sql_injection_scan(url):
     forms = get_forms(url)
-    print(f"[+] Detected {len(forms)} forms on {url}.")
+    print(f"Detected {len(forms)} forms on {url}.")
     
     for form in forms:
         details = form_details(form)
@@ -57,7 +57,6 @@ def sql_injection_scan(url):
                 elif input_tag["type"] != "submit":
                     data[input_tag['name']] = f"test{i}"
     
-            print(url)
             form_details(form)
 
             if details["method"] == "post":
@@ -71,5 +70,5 @@ def sql_injection_scan(url):
                 break
 
 if __name__ == "__main__":
-    urlToBeChecked = "https://cnn.com"
-    sql_injection_scan(urlToBeChecked)
+    url = input("Enter the URL: ")
+    sql_injection_scan(url)
