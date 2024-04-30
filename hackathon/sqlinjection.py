@@ -30,34 +30,20 @@ def form_details(form):
     return detailsOfForm
 
 def vulnerable(response):
-<<<<<<< HEAD
     errors = {"quoted string not properly terminated", 
               "unclosed quotation mark after charachter string",
               "you have an error in you SQL syntax" 
              }
-=======
-    errors = {
-        "quoted string not properly terminated", 
-        "unclosed quotation mark after the charachter string",
-        "you have an error in you SQL syntax" 
-    }
->>>>>>> 106cbc1ec31ea2bdca35a7093a459cbb9fe56d54
     for error in errors:
         if error in response.content.decode().lower():
             return True
     return False
 
-<<<<<<< HEAD
-def sql_injection_scan(url):
-    forms = get_forms(url)
-    print(f"Detected {len(forms)} forms on {url}.")
-=======
 def sql_injection_scan(urlToBeChecked):
     forms = get_forms(urlToBeChecked)
     print(f"[+] Detected {len(forms)} forms on {urlToBeChecked}.")
     
     score = 12  # set score=0
->>>>>>> 106cbc1ec31ea2bdca35a7093a459cbb9fe56d54
     
     for form in forms:
         details = form_details(form)
@@ -70,11 +56,8 @@ def sql_injection_scan(urlToBeChecked):
                 elif input_tag["type"] != "submit":
                     data[input_tag['name']] = f"test{i}"
     
-<<<<<<< HEAD
             form_details(form)
 
-=======
->>>>>>> 106cbc1ec31ea2bdca35a7093a459cbb9fe56d54
             if details["method"] == "post":
                 res = s.post(urlToBeChecked, data=data)
             elif details["method"] == "get":
@@ -89,10 +72,5 @@ def sql_injection_scan(urlToBeChecked):
     print("Score:", score)
 
 if __name__ == "__main__":
-<<<<<<< HEAD
     url = input("Enter the URL: ")
     sql_injection_scan(url)
-=======
-    urlToBeChecked = input("Enter the URL to test for SQL Injection: ")
-    sql_injection_scan(urlToBeChecked)
->>>>>>> 106cbc1ec31ea2bdca35a7093a459cbb9fe56d54
