@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pass Python variable to Javascript</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+
+<body>
+
+    <select id='selectvalue' title="Select a value">
+    </select>
+    <script>
+        //name = ['Joe','John','Jim','Paul','Niall','Tom']
+
+        var selectvalue = document.getElementById("selectvalue");
+        var test = {{ name | tojson }};
+        //The increment operator (++) increments (adds one to) its operand and returns a value.
+        for (var i = 0; i < test.length; i++) // This line checks for the length of the data you feeding in i.e the no of items
+        {
+            var selection = document.createElement("OPTION"), // This line creates a variable to store the different values fed in from the JSON object "TEST"
+                txt = document.createTextNode(test[i]); // This just reads each value from the test JSON variable above
+            selection.appendChild(txt); // This line appends each value as it is read.
+            selection.setAttribute("value", test[i]); // This line sets each value read in as a value for the drop down
+            selectvalue.insertBefore(selection, selectvalue.lastChild); //This reads eah value into the dropdown based on the order in the "TEST" above.
+        }
+    </script>
+</body>
+</html>
