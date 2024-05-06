@@ -43,7 +43,7 @@ def sql_injection_scan(urlToBeChecked):
     forms = get_forms(urlToBeChecked)
     print(f"[+] Detected {len(forms)} forms on {urlToBeChecked}.")
     
-    score = 12  # set score=0
+    sqlScore = 17  # set sqlScore=0
     
     for form in forms:
         details = form_details(form)
@@ -62,15 +62,15 @@ def sql_injection_scan(urlToBeChecked):
                 res = s.post(urlToBeChecked, data=data)
             elif details["method"] == "get":
                 res = s.get(urlToBeChecked, params=data)
-            if vulnerable(res):
+            if vulnerable(res) and sqlScore>0:
                 print("SQL injection attack vulnerability in link: ", urlToBeChecked)
-                score -= 2 
+                sqlScore -= 12
             else:
                 print("No SQL injection attack vulnerability detected")
                 break
     
-    print("Score:", score)
+    return sqlScore
 
-if __name__ == "__main__":
-    url = input("Enter the URL: ")
-    sql_injection_scan(url)
+# if __name__ == "__main__":
+#     url = input("Enter the URL: ")
+#     print(sql_injection_scan(url))

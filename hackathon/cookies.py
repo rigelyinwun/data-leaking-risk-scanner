@@ -23,7 +23,7 @@ def check_for_cookies(url):
             print("No normal (first-party) cookies found.")
             total_score = 17
 
-        return total_score
+        return total_score,normal_cookie_count[True]
     except requests.exceptions.RequestException as e:
         print("An error occurred while fetching the URL:", e)
         return 0
@@ -31,12 +31,12 @@ def check_for_cookies(url):
         print("An error occurred:", e)
         return 0
 
-if __name__ == "__main__":
-    # Get user input for the URL to check
-    url = input("Enter the URL to check for first-party cookies: ")
+# if __name__ == "__main__":
+#     # Get user input for the URL to check
+#     url = input("Enter the URL to check for first-party cookies: ")
     
-    # Call the check_for_cookies function with the user-provided URL
-    final_deducted_score = check_for_cookies(url)
+#     # Call the check_for_cookies function with the user-provided URL
+#     final_deducted_score = check_for_cookies(url)
     
-    # Print the final deducted score
-    print("Final Score:", final_deducted_score)
+#     # Print the final deducted score
+#     print("Final Score:", final_deducted_score)

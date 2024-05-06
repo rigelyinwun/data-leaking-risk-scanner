@@ -12,29 +12,40 @@ def scan_url(url):
     except requests.exceptions.RequestException as e:
         print("Error:", e)
 
-if __name__ == "__main__":
-    user_url = input("Enter the URL to scan: ")
-    scan_url(user_url)
+# if __name__ == "__main__":
+#     user_url = input("Enter the URL to scan: ")
+#     scan_url(user_url)
 
 def clickjack(url):
+    bool_array = [False, False,False,False,False,False,False]
+    clickjackScore=0
     try:
         response = requests.get(url)
         if "Strict-Transport-Security" in response.headers:
-            return True
-        elif "X-Content-Type-Options" in response.headers:
-            return True
-        elif "Content-Security-Policy" in response.headers:
-            return True
-        elif "X-Frame-Options" in response.headers:
-            return True
-        elif "X-XSS-Protection" in response.headers:
-            return True
-        elif "Referrer-Policy" in response.headers:
-            return True
-        elif "Feature-policy" in response.headers:
-            return True
+            bool_array[0]= True
+            clickjackScore+=2
+        if "X-Content-Type-Options" in response.headers:
+            bool_array[1]= True
+            clickjackScore+=2
+        if "Content-Security-Policy" in response.headers:
+            bool_array[2]= True
+            clickjackScore+=2
+        if "X-Frame-Options" in response.headers:
+            bool_array[3]= True
+            clickjackScore+=2
+        if "X-XSS-Protection" in response.headers:
+            bool_array[4]= True
+            clickjackScore+=2
+        if "Referrer-Policy" in response.headers:
+            bool_array[5]= True
+            clickjackScore+=2
+        if "Feature-policy" in response.headers:
+            bool_array[6]= True
+            clickjackScore+=2
         
-    except:
-        return False
+    except requests.RequestException as e:
+        print("Error making HTTP request:", e)
+
+    return bool_array,clickjackScore
     
-print(clickjack(user_url))
+# print(clickjack(user_url))

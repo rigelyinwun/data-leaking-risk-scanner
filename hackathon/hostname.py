@@ -1,8 +1,8 @@
 import socket
 from urllib.parse import urlparse
 
-# Prompt the user to enter the URL
-url = input("Enter the URL: ")
+# # Prompt the user to enter the URL
+# url = input("Enter the URL: ")
 
 def valid_hostname(url: str):
     """
@@ -11,6 +11,7 @@ def valid_hostname(url: str):
     """
     parsed_url = urlparse(url)
     hostname = parsed_url.hostname
+    HNscore=0
 
     # Block attempts to scan things like 'localhost'
     if '.' not in hostname or 'localhost' in hostname:
@@ -37,16 +38,19 @@ def valid_hostname(url: str):
 
         if len(hostname_ips) < 1:
             return False
+        
+        HNscore=9
     except:
         return False
 
-    return hostname
+    return hostname,HNscore
 
-print(valid_hostname(url))
+# print(valid_hostname(url))
 
 def valid_scheme(url):
     parsed_url = urlparse(url)
     scheme = parsed_url.scheme
+    schemeScore=0
     if scheme == '':
         if url.netloc == '':
             # Relative URL (src="/path")
@@ -60,9 +64,10 @@ def valid_scheme(url):
     # check if it's a secure scheme
     if scheme == 'https' or (relativeorigin and scheme == 'https'):
         securescheme = True
+        schemeScore=8
     else:
         securescheme = False
 
-    return securescheme
+    return securescheme,schemeScore
 
-print(valid_scheme(url))
+# print(valid_scheme(url))
