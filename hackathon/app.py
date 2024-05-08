@@ -39,7 +39,7 @@ def test():
     thirdPartyCookies=analyze_website(url)[2]
     total=CJScore+hnScore+schemeScore+aaScore+sqlScore+cookiesScore+thirdPartyScore
     print(total)
-    return jsonify(boolArr=boolArr,hostName=hostName,scheme=scheme,auth_header=auth_header,auth_meta=auth_meta,authorize=authorize,
+    return jsonify(boolArr=boolArr,CJScore=CJScore,sqlScore=sqlScore,hnScore=hnScore,hostName=hostName,scheme=scheme,auth_header=auth_header,auth_meta=auth_meta,authorize=authorize,
                    cookiesNum=cookiesNum,thirdPartyCookies=thirdPartyCookies,thirdPartyRequest=thirdPartyRequest,total=total)
 
 if __name__ == '__main__':

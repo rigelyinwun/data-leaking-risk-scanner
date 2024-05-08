@@ -4,15 +4,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pass Python variable to Javascript</title>
+    <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Feature-Policy"
+        content="geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'none'; fullscreen 'self'; payment 'none';">
+    <title>Data Leaking Risk Scanner</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
 
 <body>
     <input type="text" id="url">
 
-    <button type="submit" onclick='myfunction();'>Click Here to see your data</button>
+    <button type="submit" onclick='myfunction();'>Scan url</button>
     <div id="result"></div>
+    <br>
+    <br>
+    <div class="border">
+        <div id="myBar" style="height:24px;width: 0%;"></div>
+    </div>
+
+    <p id="score">0%</p>
+
+    <div class="param">
+        <h2>clickjack vulnerability</h2>
+        <ul id="clickjack">
+        </ul>
+    </div>
+
+    <div class="tipforDev">
+        <h2>tips for Developer</h2>
+        <div id="tipDev"></div>
+    </div>
+
+    <div class="tipforUser">
+        <h2>tips for User</h2>
+        <div id="tipUser"></div>
+    </div>
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -21,6 +50,8 @@
         function myfunction() {
             const url = document.getElementById("url").value;
             const data = { url };
+            var tipDev = []
+            var tipUser = []
 
             $.ajax({
                 url: "/test",
@@ -28,10 +59,89 @@
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (response) {
-                    $('#result').text('Clickjack Score: ' + response.total);
+                    $('#result').text('Total Score: ' + response.total);
+                    move(response.total)
+
+                    if (response.CJScore < 14) {
+                        if (!response.boolArr[0]) {
+                            $('#clickjack').append('<li>Missing Strict-Transport-Security</li>')
+                        }
+                        if (!response.boolArr[1]) {
+                            $('#clickjack').append('<li>Missing X-Content-Type-Options</li>')
+                        }
+                        if (!response.boolArr[2]) {
+                            $('#clickjack').append('<li>Missing Content-Security-Policy</li>')
+                        }
+                        if (!response.boolArr[3]) {
+                            $('#clickjack').append('<li>Missing X-Frame-Options</li>')
+                        }
+                        if (!response.boolArr[4]) {
+                            $('#clickjack').append('<li>Missing X-XSS-Protection</li>')
+                        }
+                        if (!response.boolArr[5]) {
+                            $('#clickjack').append('<li>Missing Referrer-Policy</li>')
+                        }
+                        if (!response.boolArr[6]) {
+                            $('#clickjack').append('<li>Missing Feature-policy</li>')
+                        }
+                        tipDev.push('add on missing clickjack headers')
+                        tipUser.push('be careful')
+                    } else {
+                        $('#clickjack').text('Have no clickjack vulnerability')
+                    }
+
+                    displayList(tipDev, "#tipDev")
+                    displayList(tipUser, "#tipUser")
                 }
             });
         }
+        function move(score) {
+            var elem = document.getElementById("myBar");
+            var width = 20;
+            var id = setInterval(frame, 10);
+            function frame() {
+                if (width >= score) {
+                    clearInterval(id);
+                } else {
+                    width++;
+                    elem.style.width = width + '%';
+                    document.getElementById("score").innerHTML = width * 1 + '%';
+                }
+            }
+        }
+
+        function arrayToList(array) {
+            // Create a new unordered list element
+            const ul = document.createElement('ul');
+
+            // Loop through the array
+            array.forEach(function (item) {
+                // Create a new list item element
+                const li = document.createElement('li');
+
+                // Set the text content of the list item to the array element
+                li.textContent = item;
+
+                // Append the list item to the unordered list
+                ul.appendChild(li);
+            });
+
+            // Return the unordered list
+            return ul;
+        }
+
+        // Function to display the list in the specified container
+        function displayList(array, containerId) {
+            // Get the list container element
+            const listContainer = document.querySelector(containerId);
+
+            // Clear existing list content
+            listContainer.innerHTML = '';
+
+            // Convert the array to a list and append it to the list container
+            listContainer.appendChild(arrayToList(array));
+        }
+
     </script>
 </body>
 
