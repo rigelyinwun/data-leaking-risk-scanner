@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+import json
+from flask import Flask, render_template,request,jsonify
 
 from geturl import scan_url,clickjack
 from hostname import valid_hostname,valid_scheme
@@ -11,8 +12,35 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    name = ['Joe','John','Jim','Paul','Niall','Tom']
-    return render_template('index.html', name=name)
+    return render_template('index.html')
+
+@app.route('/test', methods=['POST'])
+def test():
+    output = request.get_json()
+    print(output) # This is the output that was stored in the JSON within the browser
+    # result = json.loads(output) #this converts the json output to a python dictionary
+    url = output.get('url', '')
+    scan_url(url)
+    boolArr=clickjack(url)[0]
+    CJScore=clickjack(url)[1]
+    hostName=valid_hostname(url)[0]
+    hnScore=valid_hostname(url)[1]
+    scheme=valid_scheme(url)[0]
+    schemeScore=valid_scheme(url)[1]
+    auth_header=analyze_authentication_layers(url)
+    auth_meta=check_authentication_meta_tags(url)
+    aaScore=calculate_authentication_score(url)
+    authorize=check_authorization_meta_tags(url)[1]
+    sqlScore=sql_injection_scan(url)
+    cookiesScore=check_for_cookies(url)[0]
+    cookiesNum=check_for_cookies(url)[1]
+    thirdPartyScore=analyze_website(url)[0]
+    thirdPartyRequest=analyze_website(url)[1]
+    thirdPartyCookies=analyze_website(url)[2]
+    total=CJScore+hnScore+schemeScore+aaScore+sqlScore+cookiesScore+thirdPartyScore
+    print(total)
+    return jsonify(boolArr=boolArr,hostName=hostName,scheme=scheme,auth_header=auth_header,auth_meta=auth_meta,authorize=authorize,
+                   cookiesNum=cookiesNum,thirdPartyCookies=thirdPartyCookies,thirdPartyRequest=thirdPartyRequest,total=total)
 
 if __name__ == '__main__':
     app.run(debug=True)

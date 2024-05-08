@@ -9,23 +9,28 @@
 </head>
 
 <body>
-
-    <select id='selectvalue' title="Select a value">
-    </select>
     <input type="text" id="url">
-    <script>
-        //name = ['Joe','John','Jim','Paul','Niall','Tom']
 
-        var selectvalue = document.getElementById("selectvalue");
-        var test = {{ name | tojson }};
-        //The increment operator (++) increments (adds one to) its operand and returns a value.
-        for (var i = 0; i < test.length; i++) // This line checks for the length of the data you feeding in i.e the no of items
-        {
-            var selection = document.createElement("OPTION"), // This line creates a variable to store the different values fed in from the JSON object "TEST"
-                txt = document.createTextNode(test[i]); // This just reads each value from the test JSON variable above
-            selection.appendChild(txt); // This line appends each value as it is read.
-            selection.setAttribute("value", test[i]); // This line sets each value read in as a value for the drop down
-            selectvalue.insertBefore(selection, selectvalue.lastChild); //This reads eah value into the dropdown based on the order in the "TEST" above.
+    <button type="submit" onclick='myfunction();'>Click Here to see your data</button>
+    <div id="result"></div>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+        function myfunction() {
+            const url = document.getElementById("url").value;
+            const data = { url };
+
+            $.ajax({
+                url: "/test",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    $('#result').text('Clickjack Score: ' + response.total);
+                }
+            });
         }
     </script>
 </body>
