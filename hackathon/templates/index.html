@@ -21,64 +21,66 @@
     <div id="result"></div>
     <br>
     <br>
-    <div class="border">
-        <div id="myBar" style="height:24px;width: 0%;"></div>
-    </div>
+    <div id="main">
+        <div class="border">
+            <div id="myBar" style="height:24px;width: 0%;"></div>
+        </div>
 
-    <p id="score">0%</p>
+        <p id="score">0%</p>
 
-    <div class="risk"></div>
+        <div class="risk"></div>
 
-    <table border="1">
-        <tr>
-            <td>80-99</td>
-            <td>Low Risk</td>
-        </tr>
-        <tr>
-            <td>60-79</td>
-            <td>Medium Low Risk</td>
-        </tr>
-        <tr>
-            <td>40-59</td>
-            <td>Medium Risk</td>
-        </tr>
-        <tr>
-            <td>20-39</td>
-            <td>Medium High Risk</td>
-        </tr>
-        <tr>
-            <td>0-19</td>
-            <td>High Risk</td>
-        </tr>
-    </table>
+        <table border="1">
+            <tr>
+                <td>80-99</td>
+                <td>Low Risk</td>
+            </tr>
+            <tr>
+                <td>60-79</td>
+                <td>Medium Low Risk</td>
+            </tr>
+            <tr>
+                <td>40-59</td>
+                <td>Medium Risk</td>
+            </tr>
+            <tr>
+                <td>20-39</td>
+                <td>Medium High Risk</td>
+            </tr>
+            <tr>
+                <td>0-19</td>
+                <td>High Risk</td>
+            </tr>
+        </table>
 
-    <div class="param">
-        <h2>clickjack vulnerability</h2>
-        <ul id="clickjack"></ul>
-        <h2>SQL vulnerability</h2>
-        <ul id="sql"></ul>
-        <h2>Hostname vulnerability</h2>
-        <ul id="hostname"></ul>
-        <h2>Scheme vulnerability</h2>
-        <ul id="scheme"></ul>
-        <h2>authentication vulnerability</h2>
-        <ul id="authenticate"></ul>
-        <h2>authorization vulnerability</h2>
-        <ul id="authorize"></ul>
-        <h2>cookies vulnerability</h2>
-        <ul id="cookies"></ul>
-        <h2>3rd party integration vulnerability</h2>
-        <ul id="thirdParty"></ul>
-    </div>
+        <div class="param">
+            <h2>clickjack vulnerability</h2>
+            <ul id="clickjack"></ul>
+            <h2>SQL vulnerability</h2>
+            <ul id="sql"></ul>
+            <h2>Hostname vulnerability</h2>
+            <ul id="hostname"></ul>
+            <h2>Scheme vulnerability</h2>
+            <ul id="scheme"></ul>
+            <h2>authentication vulnerability</h2>
+            <ul id="authenticate"></ul>
+            <h2>authorization vulnerability</h2>
+            <ul id="authorize"></ul>
+            <h2>cookies vulnerability</h2>
+            <ul id="cookies"></ul>
+            <h2>3rd party integration vulnerability</h2>
+            <ul id="thirdParty"></ul>
+        </div>
 
-    <div class="tipforDev">
-        <h2>tips for Developer</h2>
-        <div id="tipDev"></div>
-    </div>
+        <div class="tipforDev">
+            <h2>tips for Developer</h2>
+            <div id="tipDev"></div>
+        </div>
 
-    <div class="tipforUser">
-        <h2>tips for User</h2>
-        <div id="tipUser"></div>
+        <div class="tipforUser">
+            <h2>tips for User</h2>
+            <div id="tipUser"></div>
+        </div>
     </div>
 
     <div id="loading-screen">
@@ -89,6 +91,7 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        document.getElementById('main').style.display = 'none';
 
         function myfunction() {
             const url = document.getElementById("url").value;
@@ -103,22 +106,23 @@
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (response) {
-                    if(response.error){
+                    if (response.error) {
                         $('#result').text('Invalid url plaese try again');
                         $('#loading-screen').hide();
-                    }else{
+                        document.getElementById('main').style.display = 'none';
+                    } else {
                         $('#result').text('Total Score: ' + response.total);
                         move(response.total)
 
-                        if(response.total>=80){
+                        if (response.total >= 80) {
                             $('.risk').text('Low Risk of Data Leakage');
-                        }else if(response.total>=60){
+                        } else if (response.total >= 60) {
                             $('.risk').text('Medium Low Risk of Data Leakage');
-                        }else if(response.total>=40){
+                        } else if (response.total >= 40) {
                             $('.risk').text('Medium Risk of Data Leakage');
-                        }else if(response.total>=20){
+                        } else if (response.total >= 20) {
                             $('.risk').text('Medium High Risk of Data Leakage');
-                        }else if(response.total>=0){
+                        } else if (response.total >= 0) {
                             $('.risk').text('High Risk of Data Leakage');
                         }
 
@@ -150,68 +154,68 @@
                             $('#clickjack').append('<li>Have no clickjack vulnerability</li>')
                         }
 
-                        if(response.sqlScore==17){
+                        if (response.sqlScore == 17) {
                             $('#sql').append('<li>No SQL injection attack vulnerability detected</li>')
-                        }else{
+                        } else {
                             $('#sql').append('<li>SQL injection attack vulnerability detected</li>')
                             tipDev.push('blablabla')
                             tipUser.push('blablabla')
                         }
 
-                        if(response.hnScore==9){
-                            $('#hostname').append('<li>'+response.hostName+' is valid hostname</li>')
-                        }else{
+                        if (response.hnScore == 9) {
+                            $('#hostname').append('<li>' + response.hostName + ' is valid hostname</li>')
+                        } else {
                             $('#hostname').append('<li>Invalid hostname</li>')
                             tipDev.push('blablabla')
                             tipUser.push('blablabla')
                         }
 
-                        if(response.scheme){
+                        if (response.scheme) {
                             $('#scheme').append('<li>Secure scheme</li>')
-                        }else{
+                        } else {
                             $('#scheme').append('<li>Insecure scheme</li>')
                             tipDev.push('blablabla')
                             tipUser.push('blablabla')
                         }
 
-                        if(response.auth_header){
+                        if (response.auth_header) {
                             $('#authenticate').append('<li>Authentication Required</li>')
-                        }else if(response.auth_meta){
+                        } else if (response.auth_meta) {
                             $('#authenticate').append('<li>Authentication Required</li>')
-                        }else{
+                        } else {
                             $('#authenticate').append('<li>No authentication required</li>')
                             tipDev.push('blablabla')
                             tipUser.push('blablabla')
                         }
 
-                        if(response.authorize){
+                        if (response.authorize) {
                             $('#authorize').append('<li>Authorization Required</li>')
-                        }else{
+                        } else {
                             $('#authorize').append('<li>No Authorization Required</li>')
                             tipDev.push('blablabla')
                             tipUser.push('blablabla')
                         }
 
-                        if(response.cookiesNum>0){
-                            $('#cookies').append('<li>There are '+response.cookiesNum+' normal cookies detected</li>')
+                        if (response.cookiesNum > 0) {
+                            $('#cookies').append('<li>There are ' + response.cookiesNum + ' normal cookies detected</li>')
                             tipDev.push('blablabla')
                             tipUser.push('blablabla')
-                        }else{
+                        } else {
                             $('#cookies').append('<li>No normal cookies detected</li>')
                         }
 
-                        if(response.thirdPartyCookies>0){
-                            $('#thirdParty').append('<li>There are '+response.thirdPartyCookies+' third party cookies detected</li>')
+                        if (response.thirdPartyCookies > 0) {
+                            $('#thirdParty').append('<li>There are ' + response.thirdPartyCookies + ' third party cookies detected</li>')
                             tipDev.push('blablabla')
                             tipUser.push('blablabla')
-                        }else{
+                        } else {
                             $('#thirdParty').append('<li>No third party cookies detected</li>')
                         }
-                        if(response.thirdPartyRequest>0){
-                            $('#thirdParty').append('<li>There are '+response.thirdPartyRequest+' requests to external domain detected</li>')
+                        if (response.thirdPartyRequest > 0) {
+                            $('#thirdParty').append('<li>There are ' + response.thirdPartyRequest + ' requests to external domain detected</li>')
                             tipDev.push('blablabla')
                             tipUser.push('blablabla')
-                        }else{
+                        } else {
                             $('#thirdParty').append('<li>No request to external domain detected</li>')
                         }
 
@@ -220,6 +224,7 @@
                         displayList(tipDev, "#tipDev")
                         displayList(tipUser, "#tipUser")
                         $('#loading-screen').hide();
+                        $('#main').show();
                     }
                 }
             });
