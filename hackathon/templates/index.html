@@ -29,8 +29,21 @@
 
     <div class="param">
         <h2>clickjack vulnerability</h2>
-        <ul id="clickjack">
-        </ul>
+        <ul id="clickjack"></ul>
+        <h2>SQL vulnerability</h2>
+        <ul id="sql"></ul>
+        <h2>Hostname vulnerability</h2>
+        <ul id="hostname"></ul>
+        <h2>Scheme vulnerability</h2>
+        <ul id="scheme"></ul>
+        <h2>authentication vulnerability</h2>
+        <ul id="authenticate"></ul>
+        <h2>authorization vulnerability</h2>
+        <ul id="authorize"></ul>
+        <h2>cookies vulnerability</h2>
+        <ul id="cookies"></ul>
+        <h2>3rd party integration vulnerability</h2>
+        <ul id="thirdParty"></ul>
     </div>
 
     <div class="tipforDev">
@@ -87,9 +100,76 @@
                         tipDev.push('add on missing clickjack headers')
                         tipUser.push('be careful')
                     } else {
-                        $('#clickjack').text('Have no clickjack vulnerability')
+                        $('#clickjack').append('<li>Have no clickjack vulnerability</li>')
                     }
 
+                    if(response.sqlScore==17){
+                        $('#sql').append('<li>No SQL injection attack vulnerability detected</li>')
+                    }else{
+                        $('#sql').append('<li>SQL injection attack vulnerability detected</li>')
+                        tipDev.push('blablabla')
+                        tipUser.push('blablabla')
+                    }
+
+                    if(response.hnScore==9){
+                        $('#hostname').append('<li>'+response.hostName+' is valid hostname</li>')
+                    }else{
+                        $('#hostname').append('<li>Invalid hostname</li>')
+                        tipDev.push('blablabla')
+                        tipUser.push('blablabla')
+                    }
+
+                    if(response.scheme){
+                        $('#scheme').append('<li>Secure scheme</li>')
+                    }else{
+                        $('#scheme').append('<li>Insecure scheme</li>')
+                        tipDev.push('blablabla')
+                        tipUser.push('blablabla')
+                    }
+
+                    if(response.auth_header){
+                        $('#authenticate').append('<li>Authentication Required</li>')
+                    }else if(response.auth_meta){
+                        $('#authenticate').append('<li>Authentication Required</li>')
+                    }else{
+                        $('#authenticate').append('<li>No authentication required</li>')
+                        tipDev.push('blablabla')
+                        tipUser.push('blablabla')
+                    }
+
+                    if(response.authorize){
+                        $('#authorize').append('<li>Authorization Required</li>')
+                    }else{
+                        $('#authorize').append('<li>No Authorization Required</li>')
+                        tipDev.push('blablabla')
+                        tipUser.push('blablabla')
+                    }
+
+                    if(response.cookiesNum>0){
+                        $('#cookies').append('<li>There are '+response.cookiesNum+' normal cookies detected</li>')
+                        tipDev.push('blablabla')
+                        tipUser.push('blablabla')
+                    }else{
+                        $('#cookies').append('<li>No normal cookies detected</li>')
+                    }
+
+                    if(response.thirdPartyCookies>0){
+                        $('#thirdParty').append('<li>There are '+response.thirdPartyCookies+' third party cookies detected</li>')
+                        tipDev.push('blablabla')
+                        tipUser.push('blablabla')
+                    }else{
+                        $('#thirdParty').append('<li>No third party cookies detected</li>')
+                    }
+                    if(response.thirdPartyRequest>0){
+                        $('#thirdParty').append('<li>There are '+response.thirdPartyRequest+' requests to external domain detected</li>')
+                        tipDev.push('blablabla')
+                        tipUser.push('blablabla')
+                    }else{
+                        $('#thirdParty').append('<li>No request to external domain detected</li>')
+                    }
+
+                    tipDev.push('general')
+                    tipUser.push('general')
                     displayList(tipDev, "#tipDev")
                     displayList(tipUser, "#tipUser")
                 }
