@@ -27,6 +27,31 @@
 
     <p id="score">0%</p>
 
+    <div class="risk"></div>
+
+    <table border="1">
+        <tr>
+            <td>80-99</td>
+            <td>Low Risk</td>
+        </tr>
+        <tr>
+            <td>60-79</td>
+            <td>Medium Low Risk</td>
+        </tr>
+        <tr>
+            <td>40-59</td>
+            <td>Medium Risk</td>
+        </tr>
+        <tr>
+            <td>20-39</td>
+            <td>Medium High Risk</td>
+        </tr>
+        <tr>
+            <td>0-19</td>
+            <td>High Risk</td>
+        </tr>
+    </table>
+
     <div class="param">
         <h2>clickjack vulnerability</h2>
         <ul id="clickjack"></ul>
@@ -74,6 +99,18 @@
                 success: function (response) {
                     $('#result').text('Total Score: ' + response.total);
                     move(response.total)
+
+                    if(response.total>=80){
+                        $('.risk').text('Low Risk of Data Leakage');
+                    }else if(response.total>=60){
+                        $('.risk').text('Medium Low Risk of Data Leakage');
+                    }else if(response.total>=40){
+                        $('.risk').text('Medium Risk of Data Leakage');
+                    }else if(response.total>=20){
+                        $('.risk').text('Medium High Risk of Data Leakage');
+                    }else if(response.total>=0){
+                        $('.risk').text('High Risk of Data Leakage');
+                    }else 
 
                     if (response.CJScore < 14) {
                         if (!response.boolArr[0]) {
