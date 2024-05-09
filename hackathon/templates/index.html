@@ -81,6 +81,11 @@
         <div id="tipUser"></div>
     </div>
 
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -90,6 +95,7 @@
             const data = { url };
             var tipDev = []
             var tipUser = []
+            $('#loading-screen').show();
 
             $.ajax({
                 url: "/test",
@@ -97,118 +103,124 @@
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function (response) {
-                    $('#result').text('Total Score: ' + response.total);
-                    move(response.total)
+                    if(response.error){
+                        $('#result').text('Invalid url plaese try again');
+                        $('#loading-screen').hide();
+                    }else{
+                        $('#result').text('Total Score: ' + response.total);
+                        move(response.total)
 
-                    if(response.total>=80){
-                        $('.risk').text('Low Risk of Data Leakage');
-                    }else if(response.total>=60){
-                        $('.risk').text('Medium Low Risk of Data Leakage');
-                    }else if(response.total>=40){
-                        $('.risk').text('Medium Risk of Data Leakage');
-                    }else if(response.total>=20){
-                        $('.risk').text('Medium High Risk of Data Leakage');
-                    }else if(response.total>=0){
-                        $('.risk').text('High Risk of Data Leakage');
-                    }else 
-
-                    if (response.CJScore < 14) {
-                        if (!response.boolArr[0]) {
-                            $('#clickjack').append('<li>Missing Strict-Transport-Security</li>')
+                        if(response.total>=80){
+                            $('.risk').text('Low Risk of Data Leakage');
+                        }else if(response.total>=60){
+                            $('.risk').text('Medium Low Risk of Data Leakage');
+                        }else if(response.total>=40){
+                            $('.risk').text('Medium Risk of Data Leakage');
+                        }else if(response.total>=20){
+                            $('.risk').text('Medium High Risk of Data Leakage');
+                        }else if(response.total>=0){
+                            $('.risk').text('High Risk of Data Leakage');
                         }
-                        if (!response.boolArr[1]) {
-                            $('#clickjack').append('<li>Missing X-Content-Type-Options</li>')
+
+                        if (response.CJScore < 14) {
+                            if (!response.boolArr[0]) {
+                                $('#clickjack').append('<li>Missing Strict-Transport-Security</li>')
+                            }
+                            if (!response.boolArr[1]) {
+                                $('#clickjack').append('<li>Missing X-Content-Type-Options</li>')
+                            }
+                            if (!response.boolArr[2]) {
+                                $('#clickjack').append('<li>Missing Content-Security-Policy</li>')
+                            }
+                            if (!response.boolArr[3]) {
+                                $('#clickjack').append('<li>Missing X-Frame-Options</li>')
+                            }
+                            if (!response.boolArr[4]) {
+                                $('#clickjack').append('<li>Missing X-XSS-Protection</li>')
+                            }
+                            if (!response.boolArr[5]) {
+                                $('#clickjack').append('<li>Missing Referrer-Policy</li>')
+                            }
+                            if (!response.boolArr[6]) {
+                                $('#clickjack').append('<li>Missing Feature-policy</li>')
+                            }
+                            tipDev.push('add on missing clickjack headers')
+                            tipUser.push('be careful')
+                        } else {
+                            $('#clickjack').append('<li>Have no clickjack vulnerability</li>')
                         }
-                        if (!response.boolArr[2]) {
-                            $('#clickjack').append('<li>Missing Content-Security-Policy</li>')
+
+                        if(response.sqlScore==17){
+                            $('#sql').append('<li>No SQL injection attack vulnerability detected</li>')
+                        }else{
+                            $('#sql').append('<li>SQL injection attack vulnerability detected</li>')
+                            tipDev.push('blablabla')
+                            tipUser.push('blablabla')
                         }
-                        if (!response.boolArr[3]) {
-                            $('#clickjack').append('<li>Missing X-Frame-Options</li>')
+
+                        if(response.hnScore==9){
+                            $('#hostname').append('<li>'+response.hostName+' is valid hostname</li>')
+                        }else{
+                            $('#hostname').append('<li>Invalid hostname</li>')
+                            tipDev.push('blablabla')
+                            tipUser.push('blablabla')
                         }
-                        if (!response.boolArr[4]) {
-                            $('#clickjack').append('<li>Missing X-XSS-Protection</li>')
+
+                        if(response.scheme){
+                            $('#scheme').append('<li>Secure scheme</li>')
+                        }else{
+                            $('#scheme').append('<li>Insecure scheme</li>')
+                            tipDev.push('blablabla')
+                            tipUser.push('blablabla')
                         }
-                        if (!response.boolArr[5]) {
-                            $('#clickjack').append('<li>Missing Referrer-Policy</li>')
+
+                        if(response.auth_header){
+                            $('#authenticate').append('<li>Authentication Required</li>')
+                        }else if(response.auth_meta){
+                            $('#authenticate').append('<li>Authentication Required</li>')
+                        }else{
+                            $('#authenticate').append('<li>No authentication required</li>')
+                            tipDev.push('blablabla')
+                            tipUser.push('blablabla')
                         }
-                        if (!response.boolArr[6]) {
-                            $('#clickjack').append('<li>Missing Feature-policy</li>')
+
+                        if(response.authorize){
+                            $('#authorize').append('<li>Authorization Required</li>')
+                        }else{
+                            $('#authorize').append('<li>No Authorization Required</li>')
+                            tipDev.push('blablabla')
+                            tipUser.push('blablabla')
                         }
-                        tipDev.push('add on missing clickjack headers')
-                        tipUser.push('be careful')
-                    } else {
-                        $('#clickjack').append('<li>Have no clickjack vulnerability</li>')
-                    }
 
-                    if(response.sqlScore==17){
-                        $('#sql').append('<li>No SQL injection attack vulnerability detected</li>')
-                    }else{
-                        $('#sql').append('<li>SQL injection attack vulnerability detected</li>')
-                        tipDev.push('blablabla')
-                        tipUser.push('blablabla')
-                    }
+                        if(response.cookiesNum>0){
+                            $('#cookies').append('<li>There are '+response.cookiesNum+' normal cookies detected</li>')
+                            tipDev.push('blablabla')
+                            tipUser.push('blablabla')
+                        }else{
+                            $('#cookies').append('<li>No normal cookies detected</li>')
+                        }
 
-                    if(response.hnScore==9){
-                        $('#hostname').append('<li>'+response.hostName+' is valid hostname</li>')
-                    }else{
-                        $('#hostname').append('<li>Invalid hostname</li>')
-                        tipDev.push('blablabla')
-                        tipUser.push('blablabla')
-                    }
+                        if(response.thirdPartyCookies>0){
+                            $('#thirdParty').append('<li>There are '+response.thirdPartyCookies+' third party cookies detected</li>')
+                            tipDev.push('blablabla')
+                            tipUser.push('blablabla')
+                        }else{
+                            $('#thirdParty').append('<li>No third party cookies detected</li>')
+                        }
+                        if(response.thirdPartyRequest>0){
+                            $('#thirdParty').append('<li>There are '+response.thirdPartyRequest+' requests to external domain detected</li>')
+                            tipDev.push('blablabla')
+                            tipUser.push('blablabla')
+                        }else{
+                            $('#thirdParty').append('<li>No request to external domain detected</li>')
+                        }
 
-                    if(response.scheme){
-                        $('#scheme').append('<li>Secure scheme</li>')
-                    }else{
-                        $('#scheme').append('<li>Insecure scheme</li>')
-                        tipDev.push('blablabla')
-                        tipUser.push('blablabla')
+                        tipDev.push('general')
+                        tipUser.push('general')
+                        displayList(tipDev, "#tipDev")
+                        displayList(tipUser, "#tipUser")
+                        $('#loading-screen').hide();
                     }
-
-                    if(response.auth_header){
-                        $('#authenticate').append('<li>Authentication Required</li>')
-                    }else if(response.auth_meta){
-                        $('#authenticate').append('<li>Authentication Required</li>')
-                    }else{
-                        $('#authenticate').append('<li>No authentication required</li>')
-                        tipDev.push('blablabla')
-                        tipUser.push('blablabla')
-                    }
-
-                    if(response.authorize){
-                        $('#authorize').append('<li>Authorization Required</li>')
-                    }else{
-                        $('#authorize').append('<li>No Authorization Required</li>')
-                        tipDev.push('blablabla')
-                        tipUser.push('blablabla')
-                    }
-
-                    if(response.cookiesNum>0){
-                        $('#cookies').append('<li>There are '+response.cookiesNum+' normal cookies detected</li>')
-                        tipDev.push('blablabla')
-                        tipUser.push('blablabla')
-                    }else{
-                        $('#cookies').append('<li>No normal cookies detected</li>')
-                    }
-
-                    if(response.thirdPartyCookies>0){
-                        $('#thirdParty').append('<li>There are '+response.thirdPartyCookies+' third party cookies detected</li>')
-                        tipDev.push('blablabla')
-                        tipUser.push('blablabla')
-                    }else{
-                        $('#thirdParty').append('<li>No third party cookies detected</li>')
-                    }
-                    if(response.thirdPartyRequest>0){
-                        $('#thirdParty').append('<li>There are '+response.thirdPartyRequest+' requests to external domain detected</li>')
-                        tipDev.push('blablabla')
-                        tipUser.push('blablabla')
-                    }else{
-                        $('#thirdParty').append('<li>No request to external domain detected</li>')
-                    }
-
-                    tipDev.push('general')
-                    tipUser.push('general')
-                    displayList(tipDev, "#tipDev")
-                    displayList(tipUser, "#tipUser")
                 }
             });
         }

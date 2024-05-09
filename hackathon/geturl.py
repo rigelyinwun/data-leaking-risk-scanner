@@ -1,6 +1,7 @@
 import requests
 
 def scan_url(url):
+    error=False
     try:
         response = requests.get(url)
         if response.status_code == 200:
@@ -11,6 +12,8 @@ def scan_url(url):
             print(f"URL is accessible but returns a {response.status_code} status code.")
     except requests.exceptions.RequestException as e:
         print("Error:", e)
+        error=True
+        return error
 
 # if __name__ == "__main__":
 #     user_url = input("Enter the URL to scan: ")
