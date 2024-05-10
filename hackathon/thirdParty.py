@@ -36,12 +36,10 @@ def analyze_website(url):
         total_score = 17
 
         if external_requests:
-            print("Requests to external domains found:")
             for request_url in external_requests:
                 print(request_url)
                 request_count+=1
                 total_score -= 1 # Deduct 1 for external requests
-        
         else:
             print("No external domain found.")
             total_score = 17
@@ -52,7 +50,6 @@ def analyze_website(url):
                 print(cookie)
                 thirdCookies+=1
                 total_score -= 1  # Deduct 1 for third-party cookies
-        
         else:
             print("No cookies found.")
             total_score =17
@@ -64,10 +61,3 @@ def analyze_website(url):
         print("An error occurred while fetching the URL:", e)
     except Exception as e:
         print("An unexpected error occurred:", e)
-
-
-# if __name__ == "__main__":
-#     url = input("Enter the URL to analyze: ")
-    
-#     # Call the analyze_website function with the user-provided URL
-#     print(analyze_website(url))

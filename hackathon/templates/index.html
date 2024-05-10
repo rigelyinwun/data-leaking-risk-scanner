@@ -12,13 +12,12 @@
         content="geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'none'; fullscreen 'self'; payment 'none';">
     <title>Data Leaking Risk Scanner</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
 </head>
 
 <body>
     <section class="scan">
         <h2>Data Leaking Risk Scanner</h2>
-        <input type="text" id="url" placeholder="https://www.dhycbcm.com">
+        <input type="text" id="url" placeholder="Enter url">
         <button type="submit" onclick="myfunction();">Scan URL</button>
         <div id="result"></div>
     </section>
@@ -73,7 +72,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="check">
                 <div class="param">
                     <div class="vulnerability-box" id="clickjack-box">
@@ -143,16 +142,11 @@
                 </div>
             </div>
 
-        
-
-
-
         </div>
     </section>
 
     <footer>
         <div class="contact-info">
-           
             <p>&copy; 2024 Our Site</p>
         </div>
 
@@ -166,7 +160,6 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // document.getElementById('main').style.display = 'none';
         document.getElementById('main').style.display = 'none';
         // Variable to store the interval ID for the progress animation
         var progressInterval;
@@ -192,7 +185,6 @@
             $('.inside-circle').text(percentage + '%');
         }
 
-
         function myfunction() {
             const url = document.getElementById("url").value;
             const data = { url };
@@ -213,8 +205,8 @@
                     } else {
                         $('#result').text('Total Score: ' + response.total);
                         move(response.total);
-                         // Add the "active" class to all vulnerability boxes
-                         $('.vulnerability-box').addClass('active');
+                        // Add the "active" class to all vulnerability boxes
+                        $('.vulnerability-box').addClass('active');
                         // Calculate percentage
                         var percentage = response.total;
 
@@ -235,6 +227,8 @@
                         } else if (response.total >= 0) {
                             $('.risk').text('High Risk of Data Leakage');
                         }
+
+                        document.querySelector('#clickjack').innerHTML=''
 
                         if (response.CJScore < 14) {
                             if (!response.boolArr[0]) {
@@ -260,10 +254,11 @@
                             }
                             tipDev.push('Add on missing clickjack headers')
                             tipUser.push('Be Cautious with Clicks, input fields or even when accessing the website')
-
                         } else {
                             $('#clickjack').append('<li>Have no clickjack vulnerability</li>')
                         }
+
+                        document.querySelector('#sql').innerHTML=''
 
                         if (response.sqlScore == 17) {
                             $('#sql').append('<li>No SQL injection attack vulnerability detected</li>')
@@ -274,8 +269,9 @@
                             tipDev.push('Limit the privileges granted to database users and applications')
                             tipDev.push('Consider using Object-Relational Mapping (ORM) frameworks')
                             tipUser.push('Limit Exposure of Personal Information')
-
                         }
+
+                        document.querySelector('#hostname').innerHTML=''
 
                         if (response.hnScore == 9) {
                             $('#hostname').append('<li>' + response.hostName + ' is valid hostname</li>')
@@ -285,14 +281,17 @@
                             tipUser.push('consider using a virtual private network (VPN) or other secure connection')
                         }
 
+                        document.querySelector('#scheme').innerHTML=''
+
                         if (response.scheme) {
                             $('#scheme').append('<li>Secure scheme</li>')
                         } else {
                             $('#scheme').append('<li>Insecure scheme</li>')
                             tipDev.push('Transition the website to HTTPS by obtaining an SSL/TLS certificate')
                             tipUser.push('Browse website over HTTPS connections')
-
                         }
+
+                        document.querySelector('#authenticate').innerHTML=''
 
                         if (response.auth_header) {
                             $('#authenticate').append('<li>Authentication Required</li>')
@@ -302,8 +301,9 @@
                             $('#authenticate').append('<li>No authentication required</li>')
                             tipDev.push('Add on authentication process when login or sign up')
                             tipUser.push('Use Strong, Unique Passwords')
-
                         }
+
+                        document.querySelector('#authorize').innerHTML=''
 
                         if (response.authorize) {
                             $('#authorize').append('<li>Authorization Required</li>')
@@ -311,23 +311,24 @@
                             $('#authorize').append('<li>No Authorization Required</li>')
                             tipDev.push('Provide Authorization Process whenever need to access other resources')
                             tipUser.push('Be Wary of Phishing Attempts')
-
                         }
+
+                        document.querySelector('#cookies').innerHTML=''
 
                         if (response.cookiesNum > 0) {
                             $('#cookies').append('<li>There are ' + response.cookiesNum + ' normal cookies detected</li>')
                             tipDev.push('Manage Cookie Settings to reduce the risk of data leakage')
                             tipUser.push('Consider adjusting your browser settings to control how cookies are stored and accessed')
-
                         } else {
                             $('#cookies').append('<li>No normal cookies detected</li>')
                         }
+
+                        document.querySelector('#thirdParty').innerHTML=''
 
                         if (response.thirdPartyCookies > 0) {
                             $('#thirdParty').append('<li>There are ' + response.thirdPartyCookies + ' third party cookies detected</li>')
                             tipDev.push('Manage Third Party Cookie Settings to reduce the risk of data leakage')
                             tipUser.push('You may choose to block third-party cookies or delete cookies periodically')
-
                         } else {
                             $('#thirdParty').append('<li>No third party cookies detected</li>')
                         }
@@ -343,8 +344,6 @@
                         tipUser.push('Consider installing reputable browser extensions that offer privacy-enhancing features')
                         tipUser.push('Avoid Providing Sensitive Information')
 
-
-                        
                         displayList(tipDev, "#tipDev")
                         displayList(tipUser, "#tipUser")
                         $('#loading-screen').hide();
@@ -368,8 +367,6 @@
             }
         }
 
-
-
         function arrayToList(array) {
             // Create a new unordered list element
             const ul = document.createElement('ul');
@@ -386,7 +383,6 @@
                 ul.appendChild(li);
             });
 
-            // Return the unordered list
             return ul;
         }
 
@@ -401,7 +397,6 @@
             // Convert the array to a list and append it to the list container
             listContainer.appendChild(arrayToList(array));
         }
-
 
         $(document).ready(function () {
             $('.vulnerability-box').click(function () {
@@ -420,7 +415,6 @@
             });
         });
 
-        
     </script>
 
 </body>

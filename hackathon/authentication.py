@@ -43,14 +43,13 @@ def analyze_authentication_layers(url):
 def check_authentication_meta_tags(url):
     authen_meta=False
     try:
-        # Send a GET request to the specified URL
+
         response = requests.get(url)
         response.raise_for_status()  # Raise an exception for HTTP errors
         
         # Parse the HTML content of the response
         soup = BeautifulSoup(response.content, 'html.parser')
         
-        # Find all meta tags in the HTML content
         meta_tags = soup.find_all('meta')
         
         # Check for meta tags containing authentication-related information
@@ -85,7 +84,6 @@ def check_authorization_meta_tags(url):
         # Parse the HTML content using BeautifulSoup
         soup = BeautifulSoup(response.content, 'html.parser')
 
-        # Find all meta tags with name="authorization"
         authorization_meta_tags = soup.find_all('meta', attrs={'name': 'authorization'})
 
         # Check if any authorization meta tags were found
@@ -120,8 +118,3 @@ def calculate_authentication_score(url):
         auth_score -= 5
 
     return auth_score
-
-# if __name__ == "__main__":
-#     # Get user input for the URL to analyze
-#     url = input("Enter the URL to analyze for authentication and authorization: ")
-#     print(calculate_authentication_score(url))

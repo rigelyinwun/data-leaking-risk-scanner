@@ -18,7 +18,6 @@ def index():
 def test():
     output = request.get_json()
     print(output) # This is the output that was stored in the JSON within the browser
-    # result = json.loads(output) #this converts the json output to a python dictionary
     url = output.get('url', '')
     error=scan_url(url)
     #avoid getting invalid url

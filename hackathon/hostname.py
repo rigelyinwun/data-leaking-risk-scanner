@@ -1,9 +1,6 @@
 import socket
 from urllib.parse import urlparse
 
-# # Prompt the user to enter the URL
-# url = input("Enter the URL: ")
-
 def valid_hostname(url: str):
     """
     :parameter hostname: The hostname requested in the scan

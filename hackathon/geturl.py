@@ -15,10 +15,6 @@ def scan_url(url):
         error=True
         return error
 
-# if __name__ == "__main__":
-#     user_url = input("Enter the URL to scan: ")
-#     scan_url(user_url)
-
 def clickjack(url):
     bool_array = [False, False,False,False,False,False,False]
     clickjackScore=0
@@ -50,5 +46,3 @@ def clickjack(url):
         print("Error making HTTP request:", e)
 
     return bool_array,clickjackScore
-    
-# print(clickjack(user_url))

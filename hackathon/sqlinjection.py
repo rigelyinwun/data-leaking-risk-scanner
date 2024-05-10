@@ -58,19 +58,23 @@ def sql_injection_scan(urlToBeChecked):
     
             form_details(form)
 
-            if details["method"] == "post":
-                res = s.post(urlToBeChecked, data=data)
-            elif details["method"] == "get":
-                res = s.get(urlToBeChecked, params=data)
-            if vulnerable(res) and sqlScore>0:
-                print("SQL injection attack vulnerability in link: ", urlToBeChecked)
-                sqlScore -= 12
-            else:
-                print("No SQL injection attack vulnerability detected")
-                break
+            # Make the request with modified input data
+            # to avoid res has no value
+            res = None
+            try:
+                if details["method"] == "post":
+                    res = s.post(urlToBeChecked, data=data)
+                elif details["method"] == "get":
+                    res = s.get(urlToBeChecked, params=data)
+            except Exception as e:
+                print(f"Error occurred during request: {e}")
+
+            if res is not None:
+                if vulnerable(res) and sqlScore>0:
+                    print("SQL injection attack vulnerability in link: ", urlToBeChecked)
+                    sqlScore -= 12
+                else:
+                    print("No SQL injection attack vulnerability detected")
+                    break
     
     return sqlScore
-
-# if __name__ == "__main__":
-#     url = input("Enter the URL: ")
-#     print(sql_injection_scan(url))
