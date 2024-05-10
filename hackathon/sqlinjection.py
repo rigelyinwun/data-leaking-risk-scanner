@@ -1,12 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
-import sys
-from urllib.parse import urljoin
 
 s = requests.Session()
-s.headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+s.headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 
-#  Function to get all forms 
 def get_forms(url):
     soup = BeautifulSoup(s.get(url).content, "html.parser")
     return soup.find_all("form")
@@ -34,7 +31,7 @@ def form_details(form):
 
 def vulnerable(response):
     errors = {"quoted string not properly terminated", 
-              "unclosed quotation mark after the charachter string",
+              "unclosed quotation mark after charachter string",
               "you have an error in you SQL syntax" 
              }
     for error in errors:
@@ -42,9 +39,11 @@ def vulnerable(response):
             return True
     return False
 
-def sql_injection_scan(url):
-    forms = get_forms(url)
-    print(f"[+] Detected {len(forms)} forms on {url}.")
+def sql_injection_scan(urlToBeChecked):
+    forms = get_forms(urlToBeChecked)
+    print(f"[+] Detected {len(forms)} forms on {urlToBeChecked}.")
+    
+    sqlScore = 17  # set sqlScore=0
     
     for form in forms:
         details = form_details(form)
@@ -57,19 +56,21 @@ def sql_injection_scan(url):
                 elif input_tag["type"] != "submit":
                     data[input_tag['name']] = f"test{i}"
     
-            print(url)
             form_details(form)
 
             if details["method"] == "post":
-                res = s.post(url, data=data)
+                res = s.post(urlToBeChecked, data=data)
             elif details["method"] == "get":
-                res = s.get(url, params=data)
-            if vulnerable(res):
-                print("SQL injection attack vulnerability in link: ", url )
+                res = s.get(urlToBeChecked, params=data)
+            if vulnerable(res) and sqlScore>0:
+                print("SQL injection attack vulnerability in link: ", urlToBeChecked)
+                sqlScore -= 12
             else:
                 print("No SQL injection attack vulnerability detected")
                 break
+    
+    return sqlScore
 
-if __name__ == "__main__":
-    urlToBeChecked = "https://cnn.com"
-    sql_injection_scan(urlToBeChecked)
+# if __name__ == "__main__":
+#     url = input("Enter the URL: ")
+#     print(sql_injection_scan(url))

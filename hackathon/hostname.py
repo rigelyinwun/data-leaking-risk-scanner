@@ -1,32 +1,26 @@
 import socket
 from urllib.parse import urlparse
 
-# Prompt the user to enter the URL
-url = input("Enter the URL: ")
+# # Prompt the user to enter the URL
+# url = input("Enter the URL: ")
 
-# Parse the URL to extract the scheme and hostname
-parsed_url = urlparse(url)
-scheme = parsed_url.scheme
-hostname = parsed_url.hostname
-
-# Display the extracted scheme and hostname
-print("Scheme extracted from the URL:", scheme)
-print("Hostname extracted from the URL:", hostname)
-
-def valid_hostname(hostname: str):
+def valid_hostname(url: str):
     """
-    :param hostname: The hostname requested in the scan
-    :return: Hostname if it's valid, None if it's an IP address, otherwise False
+    :parameter hostname: The hostname requested in the scan
+    :return: Hostname if it's valid, None check if it's an IP address, otherwise False
     """
+    parsed_url = urlparse(url)
+    hostname = parsed_url.hostname
+    HNscore=0
 
     # Block attempts to scan things like 'localhost'
     if '.' not in hostname or 'localhost' in hostname:
         return False
 
-    # First, let's try to see if it's an IPv4 address
+    # try to see if it's an IPv4 address
     try:
         socket.inet_aton(hostname)  # inet_aton() will throw an exception if hostname is not a valid IP address
-        return None  # If we get this far, it's an IP address and therefore not a valid fqdn
+        return None  # If we get this far, it's an IP address and therefore not a valid hostname
     except:
         pass
 
@@ -37,38 +31,43 @@ def valid_hostname(hostname: str):
     except:
         pass
 
-    # Then, try to do a lookup on the hostname; this should return at least one entry and should be the first time
+    # try to do a lookup on the hostname; this should return at least one entry and should be the first time
     # that the validator is making a network connection -- the same that requests would make.
     try:
         hostname_ips = socket.getaddrinfo(hostname, 443)
 
-        # This shouldn't trigger, since getaddrinfo should generate saierror if there's no A records.  Nevertheless,
-        # I want to be careful in case of edge cases.  This does make it hard to test.
         if len(hostname_ips) < 1:
             return False
+        
+        HNscore=9
     except:
         return False
 
-    # If we've made it this far, then everything is good to go!  Woohoo!
-    return hostname
+    return hostname,HNscore
 
-#scheme
-print(valid_hostname(hostname))
+# print(valid_hostname(url))
 
-if scheme == '':
-    if url.netloc == '':
-        # Relative URL (src="/path")
-        relativeorigin = True
+def valid_scheme(url):
+    parsed_url = urlparse(url)
+    scheme = parsed_url.scheme
+    schemeScore=0
+    if scheme == '':
+        if url.netloc == '':
+            # Relative URL (src="/path")
+            relativeorigin = True
+        else:
+            # Relative protocol (src="//host/path")
+            relativeorigin = False
     else:
-        # Relative protocol (src="//host/path")
         relativeorigin = False
-else:
-    relativeorigin = False
 
-# See if it's a secure scheme
-if scheme == 'https' or (relativeorigin and urlparse(url).scheme == 'https'):
-    securescheme = True
-else:
-    securescheme = False
+    # check if it's a secure scheme
+    if scheme == 'https' or (relativeorigin and scheme == 'https'):
+        securescheme = True
+        schemeScore=8
+    else:
+        securescheme = False
 
-print(securescheme)
+    return securescheme,schemeScore
+
+# print(valid_scheme(url))
