@@ -157,10 +157,10 @@ button:hover {
 }
 
 .risk {
-    margin-top: 400px; /* Adjust the margin-top value */
-    position: absolute; /* Add position: absolute */
-    top: 33%; /* Adjust the top value */
-    left: 31%; /* Adjust the left value */
+    margin-top: 400px; 
+    position: fixed; 
+    top: 33%;
+    left: 31%; 
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     transform: translate(-50%, -50%); /* Center the element */
 
