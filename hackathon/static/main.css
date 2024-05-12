@@ -158,7 +158,7 @@ button:hover {
 
 .risk {
     margin-top: 400px; 
-    position: fixed; 
+    position: absolute; 
     top: 33%;
     left: 31%; 
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
